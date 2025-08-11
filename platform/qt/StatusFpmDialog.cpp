@@ -6,7 +6,8 @@ StatusFpmDialog::StatusFpmDialog(QWidget *parent) :
     ui(new Ui::StatusFpmDialog)
 {
     ui->setupUi(this);
-    setWindowFlags( Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint );
+    // Use QDialog flags for proper input focus on Android
+    setWindowFlags( Qt::Dialog | Qt::WindowTitleHint | Qt::CustomizeWindowHint );
 }
 
 StatusFpmDialog::~StatusFpmDialog()

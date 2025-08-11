@@ -120,6 +120,11 @@ MainWindow::MainWindow(int &argc, char **argv, QWidget *parent) :
     setAcceptDrops(true);
     qApp->installEventFilter( this );
 
+#ifdef Q_OS_ANDROID
+    // Ensure we accept touch events and map to mouse for widgets
+    setAttribute(Qt::WA_AcceptTouchEvents, true);
+#endif
+
     //Set bools for draw rules
     m_dontDraw = true;
     m_frameStillDrawing = false;
@@ -8378,7 +8383,12 @@ void MainWindow::on_actionFullscreen_triggered( bool checked )
         ui->actionShowEditArea->setEnabled( false );
         ui->actionShowSessionArea->setEnabled( false );
         ui->actionShowAudioTrack->setEnabled( false );
+        // Avoid true OS fullscreen on Android; rely on immersive + maximized
+#ifdef Q_OS_ANDROID
+        this->showMaximized();
+#else
         this->showFullScreen();
+#endif
     }
     else
     {

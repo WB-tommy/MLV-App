@@ -14,6 +14,9 @@
 #include <QList>
 #include <QDataStream>
 #include <QDebug>
+#include <QApplication>
+#include <QScreen>
+#include <QTimer>
 
 //From here for Preset Saving
 struct ExportPreset {
@@ -84,7 +87,27 @@ ExportSettingsDialog::ExportSettingsDialog(QWidget *parent, Scripting *scripting
     ui(new Ui::ExportSettingsDialog)
 {
     ui->setupUi(this);
+#ifndef Q_OS_OSX
+    Q_UNUSED(scripting);
+#endif
+    // Android-specific window configuration
+    setAttribute( Qt::WA_NativeWindow, true );
+    setAttribute( Qt::WA_AcceptTouchEvents, true );
+    setAttribute( Qt::WA_LayoutOnEntireRect, true );
     setWindowFlags( Qt::Dialog | Qt::WindowTitleHint | Qt::WindowCloseButtonHint );
+    setWindowModality(Qt::ApplicationModal);
+    // Center dialog after layout to avoid fractional position rounding
+    QTimer::singleShot(0, this, [this]{
+        QWidget* pw = parentWidget();
+        QRect ref = pw ? pw->frameGeometry() : QApplication::primaryScreen()->availableGeometry();
+        QPoint center = ref.center();
+        QPoint desired = center - QPoint(width()/2, height()/2);
+        const qreal dpr = this->devicePixelRatioF();
+        QPointF phys(desired.x()*dpr, desired.y()*dpr);
+        QPointF physRound(qRound(phys.x()), qRound(phys.y()));
+        QPoint logical(qRound(physRound.x()/dpr), qRound(physRound.y()/dpr));
+        move(logical);
+    });
     m_blockOnce = true;
     ui->comboBoxCodec->setCurrentIndex( currentCodecProfile );
     on_comboBoxCodec_currentIndexChanged( currentCodecProfile );

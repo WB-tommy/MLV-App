@@ -19,7 +19,7 @@ FcpxmlSelectDialog::FcpxmlSelectDialog(QWidget *parent, SessionModel* pModel, QS
     ui(new Ui::FcpxmlSelectDialog)
 {
     ui->setupUi(this);
-    setWindowFlags( Qt::Dialog | Qt::WindowTitleHint | Qt::WindowCloseButtonHint | Qt::WindowStaysOnTopHint );
+    setWindowFlags( Qt::Dialog | Qt::WindowTitleHint | Qt::WindowCloseButtonHint );
     m_pModel = pModel;
     m_pProxyModel = pProxyModel;
     m_pSelectionModel = pSelectionModel;

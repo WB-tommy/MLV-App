@@ -179,6 +179,17 @@ void releaseWakeLock() {
     }
 }
 
+void enableImmersiveMode() {
+    QJniObject activity = QNativeInterface::QAndroidApplication::context();
+    if (!activity.isValid()) return;
+    QJniObject::callStaticMethod<void>(
+        "fm/magiclantern/forum/MyJavaHelper",
+        "enableImmersiveMode",
+        "(Landroid/app/Activity;)V",
+        activity.object()
+    );
+}
+
 void checkAppUpdate() {
     QJniObject activity = QNativeInterface::QAndroidApplication::context();
 

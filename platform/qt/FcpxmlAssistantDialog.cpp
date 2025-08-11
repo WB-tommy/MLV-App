@@ -19,7 +19,7 @@ FcpxmlAssistantDialog::FcpxmlAssistantDialog(QWidget *parent) :
     ui(new Ui::FcpxmlAssistantDialog)
 {
     ui->setupUi(this);
-    setWindowFlags( Qt::Dialog | Qt::WindowTitleHint | Qt::WindowCloseButtonHint | Qt::WindowStaysOnTopHint );
+    setWindowFlags( Qt::Dialog | Qt::WindowTitleHint | Qt::WindowCloseButtonHint );
     m_fileList.clear();
     ui->labelStatus->setText( "" );
     ui->pushButtonImport->setEnabled( false );

@@ -9,6 +9,11 @@ import android.net.Uri;
 import android.provider.DocumentsContract;
 import android.database.Cursor;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
+import android.view.WindowManager;
 import android.os.StatFs;
 import android.os.Build;
 import android.os.storage.StorageManager;
@@ -166,5 +171,29 @@ public class MyJavaHelper {
 
     public static void closeFFmpegPipe(String pipe) {
         FFmpegKitConfig.closeFFmpegPipe(pipe);
+    }
+
+    public static void enableImmersiveMode(Activity activity) {
+        if (activity == null) return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            final Window window = activity.getWindow();
+            final View decorView = window.getDecorView();
+            // Ensure content is inset by system bars when they are shown, avoiding overlap
+            window.setDecorFitsSystemWindows(true);
+            WindowInsetsController controller = decorView.getWindowInsetsController();
+            if (controller != null) {
+                controller.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
+                controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            }
+        } else {
+            final View decorView = activity.getWindow().getDecorView();
+            // Avoid LAYOUT_* flags so content is not placed under system bars when they appear
+            decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            );
+        }
     }
 }

@@ -19,5 +19,6 @@ void requestAllFilesAccess();
 void triggerBrightWakeLock();
 void releaseWakeLock();
 void triggerDimWakeLock();
+void enableImmersiveMode();
 
 #endif // ANDROID_H
