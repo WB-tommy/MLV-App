@@ -8,6 +8,8 @@
 #include <QPushButton>
 #include <QStringBuilder>
 #include <QScrollBar>
+#include <QApplication>
+#include <QScreen>
 #include "maddy/parser.h"
 #include <memory>
 #include <string>
@@ -19,7 +21,10 @@ CUpdaterDialog::CUpdaterDialog(QWidget *parent, const QString& githubRepoAddress
     _updater(this, QUrl(githubRepoAddress), versionString)
 {
 	ui->setupUi(this);
-    setWindowFlags( Qt::Dialog | Qt::WindowTitleHint | Qt::WindowCloseButtonHint | Qt::WindowStaysOnTopHint );
+    setAttribute( Qt::WA_NativeWindow, true );
+    setAttribute( Qt::WA_AcceptTouchEvents, true );
+    setAttribute( Qt::WA_LayoutOnEntireRect, true );
+    setWindowFlags( Qt::Dialog | Qt::WindowTitleHint | Qt::WindowCloseButtonHint );
 
 	if (_silent)
 		hide();
@@ -72,7 +77,19 @@ void CUpdaterDialog::checkUpdate( void )
     _latestUpdateUrl = _updater.getUpdateChangelog().front().versionUpdateUrl;
     QScrollBar *scrollbar = ui->changeLogViewer->verticalScrollBar();
     scrollbar->setSliderPosition(0);
-    show();
+    // Center and align to device pixels to avoid fractional-offset hit regions
+    QTimer::singleShot(0, this, [this]{
+        QWidget* pw = parentWidget();
+        QRect ref = pw ? pw->frameGeometry() : QApplication::primaryScreen()->availableGeometry();
+        QPoint center = ref.center();
+        QPoint desired = center - QPoint(width()/2, height()/2);
+        const qreal dpr = this->devicePixelRatioF();
+        QPointF phys(desired.x()*dpr, desired.y()*dpr);
+        QPointF physRound(qRound(phys.x()), qRound(phys.y()));
+        QPoint logical(qRound(physRound.x()/dpr), qRound(physRound.y()/dpr));
+        move(logical);
+        show();
+    });
 }
 
 void CUpdaterDialog::applyUpdate()

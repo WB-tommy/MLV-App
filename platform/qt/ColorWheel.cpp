@@ -106,8 +106,13 @@ void ColorWheel::paintElement()
     painterTc.drawLine( 0, SIZE+BOARDERSIZE-1, SIZE-1, SIZE+BOARDERSIZE-1 );
 
     //Paint to label
-    QPixmap pic = QPixmap::fromImage( *m_pImage ).scaled( HALFSIZE * devicePixelRatio(), (HALFSIZE+BOARDERSIZE/2) * devicePixelRatio(), Qt::KeepAspectRatio, Qt::SmoothTransformation );
-    pic.setDevicePixelRatio( devicePixelRatio() );
+    // High-DPI aware pixmap: scale by DPR, then tag DPR so logical size remains constant
+    const qreal dpr = devicePixelRatioF();
+    QPixmap pic = QPixmap::fromImage( *m_pImage ).scaled( HALFSIZE * dpr,
+                                                          (HALFSIZE+BOARDERSIZE/2) * dpr,
+                                                          Qt::KeepAspectRatio,
+                                                          Qt::SmoothTransformation );
+    pic.setDevicePixelRatio( dpr );
     setPixmap( pic );
 }
 
@@ -115,10 +120,10 @@ void ColorWheel::paintElement()
 void ColorWheel::mousePressEvent(QMouseEvent *mouse)
 {
     //Marker
-    if( ( ( mouse->localPos().x() * devicePixelRatio() ) > ( HALFSIZE - HALFHANDLESIZE + m_cursor.x() ) * devicePixelRatio() / 2 )
-     && ( ( mouse->localPos().x() * devicePixelRatio() ) < ( HALFSIZE + HALFHANDLESIZE + m_cursor.x() ) * devicePixelRatio() / 2 )
-     && ( ( mouse->localPos().y() * devicePixelRatio() ) > ( HALFSIZE - HALFHANDLESIZE + m_cursor.y() ) * devicePixelRatio() / 2 )
-     && ( ( mouse->localPos().y() * devicePixelRatio() ) < ( HALFSIZE + HALFHANDLESIZE + m_cursor.y() ) * devicePixelRatio() / 2 ) )
+    if( ( mouse->localPos().x() > ( HALFSIZE - HALFHANDLESIZE + m_cursor.x() ) / 2 )
+     && ( mouse->localPos().x() < ( HALFSIZE + HALFHANDLESIZE + m_cursor.x() ) / 2 )
+     && ( mouse->localPos().y() > ( HALFSIZE - HALFHANDLESIZE + m_cursor.y() ) / 2 )
+     && ( mouse->localPos().y() < ( HALFSIZE + HALFHANDLESIZE + m_cursor.y() ) / 2 ) )
     {
         m_cursorSelected = true;
     }

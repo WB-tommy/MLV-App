@@ -66,6 +66,8 @@
 #define FMT_SIZE "%zu"
 #endif
 
+FILE* openFileWithQFile(const char* filePath, const char* mode);
+
 static uint64_t file_set_pos(FILE *stream, uint64_t offset, int whence)
 {
 #if defined(__WIN32)
@@ -489,9 +491,6 @@ int loadDngPropertiesInt(char *props_buffer, char *key, int *value)
     int res = 0;
 
     char *p = strstr(props_buffer, key);
-    char *d = value;
-
-    int len = 0;
 
     if (p != NULL)
     {
@@ -530,7 +529,11 @@ static void dng_fill_header(mlvObject_t * mlv_data, dngObject_t * dng_data, uint
 
         if (props_filename != NULL)
         {
+#ifdef __ANDROID__
+            FILE *fd = openFileWithQFile(props_filename, "rb");
+#else
             FILE *fd = fopen(props_filename, "rb");
+#endif
 
             if (fd != NULL)
             {
@@ -950,7 +953,8 @@ int dng_get_frame(mlvObject_t * mlv_data, dngObject_t * dng_data, uint32_t frame
                                             (uint8_t*)dng_data->image_buf2,
                                             stored_size,
                                             mlv_data->RAWI.xRes,
-                                            mlv_data->RAWI.yRes);
+                                            mlv_data->RAWI.yRes,
+                                            mlv_data->compression_type);
 
         if (ret <= 0)
         {
@@ -1129,7 +1133,11 @@ dngObject_t * initDngObject(mlvObject_t * mlv_data, int raw_state, double fps, i
 /* save DNG file */
 int saveDngFrame(mlvObject_t * mlv_data, dngObject_t * dng_data, uint32_t frame_index, char * dng_filename, const char *prop_filename)
 {
+#ifdef __ANDROID__
+    FILE *dngf = openFileWithQFile(dng_filename, "wb");
+#else
     FILE* dngf = fopen(dng_filename, "wb");
+#endif
     if (!dngf)
     {
         return 1;

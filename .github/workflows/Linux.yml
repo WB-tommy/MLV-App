@@ -11,23 +11,19 @@ env:
 jobs:
   build:
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
     - uses: actions/checkout@master
 
-    - name: Fix APT sources
-      run: |
-           sudo mv /etc/apt/sources.list /etc/apt/sources.list.backup
-           echo "deb http://archive.ubuntu.com/ubuntu focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list
-           echo "deb http://archive.ubuntu.com/ubuntu focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
-           echo "deb http://archive.ubuntu.com/ubuntu focal-security main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
-           echo "deb http://archive.ubuntu.com/ubuntu focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list
-           sudo apt-get update
-
     - name: Install compiler & Qt
       run: |
-           sudo apt-get install --fix-missing --no-install-recommends make g++ qt5-qmake qtbase5-dev qtmultimedia5-dev libqt5multimedia5 libqt5multimedia5-plugins libqt5opengl5-dev libqt5designer5 libqt5svg5-dev libfuse2 libxkbcommon-x11-0 appstream
+          sudo apt-get update
+          sudo apt-get install -y \
+            make g++ qt5-qmake qtbase5-dev qtmultimedia5-dev \
+            libqt5multimedia5 libqt5multimedia5-plugins \
+            libqt5opengl5-dev libqt5designer5 libqt5svg5-dev \
+            libfuse2 libxkbcommon-x11-0 appstream
 
     - name: Inspect Qt plugin directories
       run: |

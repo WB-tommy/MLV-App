@@ -30,7 +30,7 @@ PixelMapListDialog::PixelMapListDialog(QWidget *parent, MapType mapType) :
     ui(new Ui::PixelMapListDialog)
 {
     ui->setupUi(this);
-    setWindowFlags( Qt::Dialog | Qt::WindowTitleHint | Qt::WindowCloseButtonHint | Qt::WindowStaysOnTopHint );
+    setWindowFlags( Qt::Dialog | Qt::WindowTitleHint | Qt::WindowCloseButtonHint );
 
     m_mapType = mapType;
     ui->labelMissing->setVisible( false );

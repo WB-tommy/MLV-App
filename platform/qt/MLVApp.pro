@@ -154,9 +154,10 @@ SOURCES += \
     ../../src/mlv/llrawproc/patternnoise.c \
     ../../src/mlv/llrawproc/chroma_smooth.c \
     ../../src/mlv/llrawproc/hist.c \
-    ../../src/mlv/camid/camera_id.c \   
+    ../../src/mlv/camid/camera_id.c \
     ../../src/mlv/mcraw/mcraw.c \
     ../../src/mlv/mcraw/RawData.cpp \
+    ../../src/mlv/mcraw/RawData_Legacy.cpp \
     ../../src/processing/processing.c \
     ../../src/processing/raw_processing.c \
     ../../src/processing/filter/filter.c \
@@ -279,6 +280,7 @@ HEADERS += MainWindow.h \
     ../../src/processing/denoiser/denoiser_2d_median.h \
     AOS/Android.h \
     ClipInformation.h \
+    CustomPopen.h \
     InfoDialog.h \
     MyApplication.h \
     RenameDialog.h \
@@ -402,9 +404,9 @@ DISTFILES += \
 
 #Application version
 VERSION_MAJOR = 1
-VERSION_MINOR = 14
-VERSION_PATCH = 0
-VERSION_BUILD = 0
+VERSION_MINOR = 15
+VERSION_PATCH = 1
+VERSION_BUILD = 1
 
 #Target version
 DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR"\
@@ -500,15 +502,20 @@ linux-g++ {
 #    INSTALLS += target
 #}
 
-contains(ANDROID_TARGET_ARCH,arm64-v8a) {
+contains(ANDROID_TARGET_ARCH, arm64-v8a) {
     DEFINES += __arm64
-    ANDROID_PACKAGE_SOURCE_DIR = \
-        $$PWD/android
+    INCLUDEPATH += $$PWD/AOS
+
+    ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
+
     SOURCES += \
-        AOS/ExportCDNG.cpp \
+        AOS/FileWrapper.cpp \
+        AOS/JavaWrapper.cpp \
         AOS/RequestPermissions.cpp
+
     HEADERS += \
         AOS/Android.h
+
     DISTFILES += \
         android/AndroidManifest.xml \
         android/build.gradle \
@@ -517,6 +524,8 @@ contains(ANDROID_TARGET_ARCH,arm64-v8a) {
         android/gradle/wrapper/gradle-wrapper.properties \
         android/gradlew \
         android/gradlew.bat \
+        android/src/fm/magiclantern/forum/MyJavaHelper.java \
+        android/src/fm/magiclantern/forum/UpdateManager.java \
         android/res/values/libs.xml \
         android/res/xml/qtprovider_paths.xml
 }

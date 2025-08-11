@@ -13,7 +13,10 @@ EditSliderValueDialog::EditSliderValueDialog(QWidget *parent) :
     ui(new Ui::EditSliderValueDialog)
 {
     ui->setupUi(this);
-#ifdef WIN32
+#if defined(Q_OS_ANDROID)
+    // Use a true dialog on Android; Qt::Tool can break touch focus/input
+    setWindowFlags( Qt::Dialog | Qt::WindowCloseButtonHint | Qt::CustomizeWindowHint );
+#elif defined(WIN32)
     setWindowFlags( Qt::Dialog | Qt::WindowCloseButtonHint | Qt::CustomizeWindowHint );
 #else
     setWindowFlags( Qt::Tool | Qt::WindowCloseButtonHint | Qt::CustomizeWindowHint );
@@ -41,7 +44,9 @@ void EditSliderValueDialog::autoSetup(QSlider *slider, DoubleClickLabel *label, 
     pos.setX(0);
     pos.setY(0);
     pos = label->mapToGlobal( pos );
-    setGeometry( pos.x(), pos.y(), 80, 20 );
+    // Position dialog exactly aligned to label in logical coordinates
+    // Add 1px margin to avoid off-by-one hit-test rounding on some devices
+    setGeometry( pos.x() + 1, pos.y() + 1, 80, 20 );
 }
 
 //Get the value of the spinbox multimlied with factor

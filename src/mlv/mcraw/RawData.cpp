@@ -20,12 +20,17 @@
 #include <cstdint>
 #include <vector>
 #include <cstring>
-#ifndef __arm64
+#if defined(__x86_64__) || defined(_M_X64) || defined(__i386) || defined(_M_IX86)
 #include <immintrin.h>
 #endif
 
+#include "mcraw.h"
+
 namespace motioncam {
     namespace raw {
+
+    size_t DecodeLegacy(uint16_t* output, const int width, const int height, const uint8_t* input, const size_t len);
+
 
     namespace {
     const int ENCODING_BLOCK = 64;
@@ -56,7 +61,7 @@ namespace motioncam {
 // https://github.com/mirsadm/motioncam-decoder/commit/15fd711525e0701205b3805b4777c63b6184782d?diff=split&w=0
 // Code from hanatos
 
-#ifndef __arm64
+#if defined(__x86_64__) || defined(_M_X64) || defined(__i386) || defined(_M_IX86)
             struct UInt16x8
             {
                 __m128i d;
@@ -736,7 +741,11 @@ namespace motioncam {
     }
 }}
 
-extern "C" size_t mr_decode_video_frame(uint8_t *dstData, uint8_t *srcData, uint32_t srcSize, int width, int height)
+extern "C" size_t mr_decode_video_frame(uint8_t *dstData, uint8_t *srcData, uint32_t srcSize, int width, int height, int compression_type)
 {
-    return motioncam::raw::Decode((uint16_t*)dstData, width, height, srcData, srcSize);
+    if (compression_type == MOTIONCAM_COMPRESSION_TYPE) {
+        return motioncam::raw::Decode((uint16_t*)dstData, width, height, srcData, srcSize);
+    }
+
+    return motioncam::raw::DecodeLegacy((uint16_t*)dstData, width, height, srcData, srcSize);
 }

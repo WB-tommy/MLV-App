@@ -70,6 +70,7 @@ struct mr_ctx_s
 
 };
 
+FILE* openFileWithQFile(const char* filePath, const char* mode);
 static int read_first_frame(mr_ctx_t *ctx);
 
 //-----------------------------------------------------------------------------
@@ -342,6 +343,11 @@ static int mr_read_file_metadata(mr_ctx_t *ctx)
                     }
                     break;
 
+                case 17:
+                    if (STRING_EQ(js, t, len, "sensorArrangement") == 0) {
+                        parse_sensor_arrangment(&ctx->cfa_pattern, js, &tokens[++i]);
+                    }
+
                 case 18:
                     if (STRING_EQ(js, t, len, "calibrationMatrix1") == 0) {
                         cpy_matrix(ctx->calibration_matrix1, 9, js, tokens, &i);
@@ -594,7 +600,11 @@ static int mr_read_index(mr_ctx_t *ctx)
 //-----------------------------------------------------------------------------
 int mr_decoder_open(mr_ctx_t *ctx, const char *filename)
 {
+#ifdef __ANDROID__
+    ctx->fd = openFileWithQFile(filename, "rb");
+#else
     ctx->fd = fopen(filename, "rb");
+#endif
 
     if (!ctx->fd)
     {
@@ -1046,6 +1056,12 @@ int32_t mr_get_audio_channels(mr_ctx_t *ctx)
 uint32_t mr_get_cfa_pattern(mr_ctx_t *ctx)
 {
     return ctx->cfa_pattern;
+}
+
+//-----------------------------------------------------------------------------
+int mr_get_compression_type(mr_ctx_t *ctx)
+{
+    return ctx->frame_data.compression_type;
 }
 
 //-----------------------------------------------------------------------------

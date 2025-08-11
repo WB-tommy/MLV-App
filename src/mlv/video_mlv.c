@@ -37,6 +37,8 @@
 #define MAX(a,b) (((a)>(b))?(a):(b))
 #define ROR32(v,a) ((v) >> (a) | (v) << (32-(a)))
 
+FILE* openFileWithQFile(const char* filePath, const char* mode);
+
 static uint64_t file_set_pos(FILE *stream, uint64_t offset, int whence)
 {
 #if defined(__WIN32)
@@ -104,13 +106,17 @@ static FILE **load_all_chunks(char *base_filename, int *entries)
     strncpy(filename, base_filename, max_name_len - 1);
     FILE **files = malloc(sizeof(FILE*));
 
+
+#ifdef __ANDROID__
+    files[0] = openFileWithQFile(filename, "rb");
+#else
     files[0] = fopen(filename, "rb");
+#endif
     if(!files[0])
     {
         free(files);
         return NULL;
     }
-
     DEBUG( printf("\nFile %s opened\n", filename); )
 
     /* get extension and check if it is a .MLV */
@@ -146,7 +152,11 @@ static FILE **load_all_chunks(char *base_filename, int *entries)
         strcpy(&filename[strlen(filename) - 2], seq_name);
 
         /* try to open */
+#ifdef __ANDROID__
+        files[*entries] = openFileWithQFile(filename, "rb");
+#else
         files[*entries] = fopen(filename, "rb");
+#endif
         if(files[*entries])
         {
             DEBUG( printf("File %s opened\n", filename); )
@@ -240,7 +250,7 @@ int getMlvRawFrameUint16(mlvObject_t * video, uint64_t frameIndex, uint16_t * un
 
         pthread_mutex_unlock(video->main_file_mutex + chunk);
 
-        int64_t ret = mr_decode_video_frame((uint8_t*)unpackedFrame, raw_frame, frame_size, width, height);
+        int64_t ret = mr_decode_video_frame((uint8_t*)unpackedFrame, raw_frame, frame_size, width, height, video->compression_type);
 
         if (ret <= 0)
         {
@@ -782,7 +792,11 @@ static int save_mapp(mlvObject_t * video)
     }
 
     /* open .MAPP file for writing */
+#ifdef __ANDROID__
+    FILE* mappf = openFileWithQFile(mapp_filename, "wb");
+#else
     FILE* mappf = fopen(mapp_filename, "wb");
+#endif
     if (!mappf)
     {
         DEBUG( printf("Could not open %s\n\n", mapp_filename); )
@@ -826,7 +840,11 @@ static int load_mapp(mlvObject_t * video)
     memcpy(dot, ".MAPP\0", 6);
 
     /* open .MAPP file for reading */
+#ifdef __ANDROID__
+    FILE* mappf = openFileWithQFile(mapp_filename, "rb");
+#else
     FILE* mappf = fopen(mapp_filename, "rb");
+#endif
     if (!mappf)
     {
         DEBUG( printf("Could not open %s\n\n", mapp_filename); )
@@ -1619,6 +1637,7 @@ int openMcrawClip(mlvObject_t * video, char * mcrawPath, int open_mode, char * e
        video_index_max = 1;
     }
 
+    video->compression_type = mr_get_compression_type(ctx);
     video->frames      = video_index_max;
     video->video_index = (frame_index_t *)calloc(video->frames, sizeof(frame_index_t));
 
