@@ -104,11 +104,11 @@ win32{
     QMAKE_CFLAGS += -O2 -fopenmp -mssse3 -msse3 -msse2 -msse -D_FILE_OFFSET_BITS=64 -std=c99 -ftree-vectorize
     LIBS += -llibgomp-1
     greaterThan(QT_MAJOR_VERSION, 5){
-        QMAKE_CXXFLAGS += -fopenmp -std=c++17 -ftree-vectorize
+        QMAKE_CXXFLAGS += -fopenmp -mssse3 -std=c++17 -ftree-vectorize
     }
     else
     {
-        QMAKE_CXXFLAGS += -fopenmp -std=c++14 -ftree-vectorize
+        QMAKE_CXXFLAGS += -fopenmp -mssse3 -std=c++14 -ftree-vectorize
     }
 }
 
