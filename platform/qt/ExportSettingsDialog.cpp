@@ -348,7 +348,6 @@ void ExportSettingsDialog::on_comboBoxCodec_currentIndexChanged(int index)
         ui->comboBoxOption->addItem( QString( "Decompress" ) );
         ui->comboBoxOption->addItem( QString( "Averaged Frame" ) );
         ui->comboBoxOption->addItem( QString( "Extract Internal Darkframe" ) );
-        ui->comboBoxOption->addItem( QString( "Compress CineForm Film3" ) );
         ui->comboBoxOption->addItem( QString( "Compress Jpeg2000 Small" ) );
         ui->comboBoxOption->addItem( QString( "Compress Jpeg2000 Medium" ) );
         ui->comboBoxOption->addItem( QString( "Compress Jpeg2000 High Quality" ) );
@@ -381,25 +380,6 @@ void ExportSettingsDialog::on_comboBoxCodec_currentIndexChanged(int index)
         ui->comboBoxOption->addItem( QString( "HQ 8bit" ) );
         ui->comboBoxOption->addItem( QString( "SQ 8bit" ) );
         ui->comboBoxOption->addItem( QString( "LB 8bit" ) );
-    }
-    else if( index == CODEC_CINEFORM_10 || index == CODEC_CINEFORM_12 )
-    {
-        ui->labelDebayer->setEnabled( true );
-        ui->comboBoxDebayer->setEnabled( true );
-        ui->comboBoxOption->setEnabled( true );
-        ui->comboBoxOption->addItem( QString( "Film3+" ) );
-        ui->comboBoxOption->addItem( QString( "Film3" ) );
-        ui->comboBoxOption->addItem( QString( "Film2+" ) );
-        ui->comboBoxOption->addItem( QString( "Film2" ) );
-        ui->comboBoxOption->addItem( QString( "Film1.5" ) );
-        ui->comboBoxOption->addItem( QString( "Film1+" ) );
-        ui->comboBoxOption->addItem( QString( "Film1" ) );
-        ui->comboBoxOption->addItem( QString( "High+" ) );
-        ui->comboBoxOption->addItem( QString( "High" ) );
-        ui->comboBoxOption->addItem( QString( "Medium+" ) );
-        ui->comboBoxOption->addItem( QString( "Medium" ) );
-        ui->comboBoxOption->addItem( QString( "Low+" ) );
-        ui->comboBoxOption->addItem( QString( "Low" ) );
     }
     else if( index == CODEC_VP9 )
     {

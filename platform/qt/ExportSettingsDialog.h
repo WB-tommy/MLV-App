@@ -33,10 +33,8 @@
 #define CODEC_MLV                   18
 #define CODEC_DNXHD                 19
 #define CODEC_DNXHR                 20
-#define CODEC_CINEFORM_10           21
-#define CODEC_CINEFORM_12           22
-#define CODEC_VP9                   23
-#define CODEC_AUDIO_ONLY            24
+#define CODEC_VP9                   21
+#define CODEC_AUDIO_ONLY            22
 
 #define CODEC_AVI_OPTION_YUV420     0
 #define CODEC_AVI_OPTION_V210       1
@@ -83,12 +81,11 @@
 #define CODEC_MLV_DECOMPRESS        2
 #define CODEC_MLV_AVERAGED          3
 #define CODEC_MLV_EXTRACT_DF        4
-#define CODEC_MLV_CINEFORM          5
-#define CODEC_MLV_JP2K_LOW          6
-#define CODEC_MLV_JP2K_MEDIUM       7
-#define CODEC_MLV_JP2K_HIGH         8
-#define CODEC_MLV_JP2K_VERYHIGH     9
-#define CODEC_MLV_JP2K_LOSSLESS    10
+#define CODEC_MLV_JP2K_LOW          5
+#define CODEC_MLV_JP2K_MEDIUM       6
+#define CODEC_MLV_JP2K_HIGH         7
+#define CODEC_MLV_JP2K_VERYHIGH     8
+#define CODEC_MLV_JP2K_LOSSLESS     9
 
 #define CODEC_DNXHD_1080p_10bit     0
 #define CODEC_DNXHD_1080p_8bit      1
