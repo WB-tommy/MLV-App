@@ -2018,6 +2018,19 @@ void MainWindow::startExportPipe(QString fileName)
             scaled = true;
         }
     }
+    else if( m_codecProfile == CODEC_CINEFORM_10 || m_codecProfile == CODEC_CINEFORM_12 ) // resolution must be multiple of 16
+    {
+        if( width != width + (width % 16) )
+        {
+            width += width % 16;
+            scaled = true;
+        }
+        if( height != height + (height % 16) )
+        {
+            height += height % 16;
+            scaled = true;
+        }
+    }
 
     //FFMpeg export
 #if defined __linux__ && !defined APP_IMAGE
@@ -2525,6 +2538,23 @@ void MainWindow::startExportPipe(QString fileName)
                     .arg( option )
                     .arg( colorTag )
                     .arg( output ) );
+    }
+    else if( m_codecProfile == CODEC_CINEFORM_10 || m_codecProfile == CODEC_CINEFORM_12 )
+    {
+        output.append( QString( ".mov" ) );
+        int quality = m_codecOption;
+        QString mode;
+        if( m_codecProfile == CODEC_CINEFORM_10 ) mode = "yuv422p10le"; //10bit
+        else mode = "gbrp12le"; //12bit
+
+        program.append( QString( " -r %1 -y -f rawvideo -s %2 -pix_fmt rgb48 -i - -c:v cfhd -quality %3 -pix_fmt %4 -color_primaries %5 -color_trc %5 -colorspace bt709 %6\"%7\"" )
+                           .arg( fps )
+                           .arg( resolution )
+                           .arg( quality )
+                           .arg( mode )
+                           .arg( colorTag )
+                           .arg( resizeFilter )
+                           .arg( output ) );
     }
     else if( m_codecProfile == CODEC_VP9 )
     {
@@ -6812,6 +6842,12 @@ void MainWindow::on_actionExport_triggered()
         saveFileName.append( ".jp2" );
         fileType = tr("JPEG2000 (*.jp2)");
         fileEnding = ".jp2";
+    }
+    else if( m_codecProfile == CODEC_CINEFORM_10 || m_codecProfile == CODEC_CINEFORM_12 )
+    {
+        saveFileName.append( ".mov" );
+        fileType = tr("Movie (*.mov)");
+        fileEnding = ".mov";
     }
     else if( m_codecProfile == CODEC_AUDIO_ONLY )
     {

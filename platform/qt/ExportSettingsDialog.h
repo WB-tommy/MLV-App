@@ -33,8 +33,10 @@
 #define CODEC_MLV                   18
 #define CODEC_DNXHD                 19
 #define CODEC_DNXHR                 20
-#define CODEC_VP9                   21
-#define CODEC_AUDIO_ONLY            22
+#define CODEC_CINEFORM_10           21
+#define CODEC_CINEFORM_12           22
+#define CODEC_VP9                   23
+#define CODEC_AUDIO_ONLY            24
 
 #define CODEC_AVI_OPTION_YUV420     0
 #define CODEC_AVI_OPTION_V210       1
