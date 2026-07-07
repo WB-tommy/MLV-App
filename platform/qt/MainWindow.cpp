@@ -1073,7 +1073,6 @@ int MainWindow::openMlv( QString fileName )
         if( cutInFrame < 0 ) cutInFrame = 0;
         if( cutInFrame > sliderMax ) cutInFrame = sliderMax;
         ui->horizontalSliderPosition->setValue( cutInFrame );
-        m_frameChanged = true;
     }
 
     //Raw black & white level
